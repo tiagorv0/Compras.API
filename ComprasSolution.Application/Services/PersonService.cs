@@ -2,6 +2,7 @@
 using ComprasSolution.Application.DTOs;
 using ComprasSolution.Application.Services.Interfaces;
 using ComprasSolution.Domain.Entities;
+using ComprasSolution.Domain.FiltersDb;
 using ComprasSolution.Domain.Interfaces;
 using FluentValidation;
 
@@ -37,7 +38,7 @@ namespace ComprasSolution.Application.Services
 
             var person = _mapper.Map<Person>(personDTO);
             var result = await _personRepository.CreateAsync(person);
-            await _unitOfWork.CommitAsync();
+
             return ResultService.Ok<PersonDTO>(_mapper.Map<PersonDTO>(result));
         }
 
@@ -71,7 +72,6 @@ namespace ComprasSolution.Application.Services
 
             var result = _mapper.Map<PersonDTO, Person>(personDTO, person);
             await _personRepository.UpdateAsync(result);
-            await _unitOfWork.CommitAsync();
 
             return ResultService.Ok<PersonDTO>(_mapper.Map<PersonDTO>(result));
         }
@@ -83,8 +83,18 @@ namespace ComprasSolution.Application.Services
                 return ResultService.Fail("Pessoa não encontrada");
 
             await _personRepository.DeleteAsync(person);
-            await _unitOfWork.CommitAsync();
+
             return ResultService.Ok($"Pessoa do {id} foi deletada com sucesso");
+        }
+
+        public async Task<ResultService<PagedBaseResponseDTO<PersonDTO>>> GetPagedAsync(PersonFilterDb personFilterDb)
+        {
+            var peoplePaged = await _personRepository.GetPagedAsync(personFilterDb);
+            var result = new PagedBaseResponseDTO<PersonDTO>(
+                peoplePaged.TotalRegisters,
+                _mapper.Map<List<PersonDTO>>(peoplePaged.Data)
+            );
+            return ResultService.Ok(result);
         }
     }
 }

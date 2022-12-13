@@ -40,15 +40,33 @@ namespace ComprasSolution.Application.Services
             if (!validation.IsValid)
                 return ResultService.RequestError<PurchaseDTO>("Problemas de Validação!", validation);
 
-            var productId = await _productRepository.GetIdByCodErpAsync(purchaseDTO.CodErp);
-            var personId = await _personRepository.GetIdByDocumentAsync(purchaseDTO.Document);
-            var purchase = new Purchase(productId, personId);
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
 
-            var data = await _purchaseRepository.CreateAsync(purchase);
-            await _unitOfWork.CommitAsync();
-            purchaseDTO.Id = data.Id;
+                var productId = await _productRepository.GetIdByCodErpAsync(purchaseDTO.CodErp);
+                if (productId == 0)
+                {
+                    var product = new Product(purchaseDTO.ProductName, purchaseDTO.CodErp, purchaseDTO.Price.Value);
+                    await _productRepository.CreateAsync(product);
+                    productId = product.Id;
+                }
 
-            return ResultService.Ok<PurchaseDTO>(purchaseDTO);
+                var personId = await _personRepository.GetIdByDocumentAsync(purchaseDTO.Document);
+                var purchase = new Purchase(productId, personId);
+
+                var data = await _purchaseRepository.CreateAsync(purchase);
+                purchaseDTO.Id = data.Id;
+
+                await _unitOfWork.CommitTransactionAsync();
+
+                return ResultService.Ok<PurchaseDTO>(purchaseDTO);
+            }
+            catch(Exception ex)
+            {
+                await _unitOfWork.RollBackAsync();
+                return ResultService.Fail<PurchaseDTO>($"Erro: {ex.Message}");
+            }
         }
 
         public async Task<ResultService> DeleteAsync(int id)
@@ -58,7 +76,6 @@ namespace ComprasSolution.Application.Services
                 return ResultService.Fail("Compra não encontrada");
 
             await _purchaseRepository.DeleteAsync(purchase);
-            await _unitOfWork.CommitAsync();
             return ResultService.Ok($"Compra do {id} foi deletada com sucesso");
         }
 
@@ -96,7 +113,6 @@ namespace ComprasSolution.Application.Services
             purchase.Edit(purchase.Id, productId, personId);
 
             await _purchaseRepository.UpdateAsync(purchase);
-            await _unitOfWork.CommitAsync();
 
             return ResultService.Ok(_mapper.Map<PurchaseDTO>(purchase));
         }

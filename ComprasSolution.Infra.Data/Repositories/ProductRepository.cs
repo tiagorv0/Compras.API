@@ -13,7 +13,7 @@ namespace ComprasSolution.Infra.Data.Repositories
 
         public async Task<int> GetIdByCodErpAsync(string codErp)
         {
-            return (await _dbSet.FirstOrDefaultAsync(x => x.CodErp == codErp))?.Id ?? 0;
+            return (await _context.Products.FirstOrDefaultAsync(x => x.CodErp == codErp))?.Id ?? 0;
         }
     }
 }

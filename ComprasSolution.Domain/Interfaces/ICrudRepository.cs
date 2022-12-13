@@ -1,4 +1,6 @@
 ﻿using ComprasSolution.Domain.Entities;
+using ComprasSolution.Domain.FiltersDb;
+using ComprasSolution.Infra.Data.Repositories;
 
 namespace ComprasSolution.Domain.Interfaces
 {
@@ -9,5 +11,6 @@ namespace ComprasSolution.Domain.Interfaces
         Task DeleteAsync(T entity);
         Task<ICollection<T>> GetAllAsync();
         Task<T> GetByIdAsync(int id);
+        
     }
 }

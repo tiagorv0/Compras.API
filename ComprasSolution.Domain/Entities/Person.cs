@@ -7,11 +7,14 @@ namespace ComprasSolution.Domain.Entities
         public string Name { get; private set; }
         public string Document { get; private set; }
         public string Phone { get; private set; }
-        public ICollection<Purchase> Purcheses { get; set; } = new List<Purchase>();
+        public ICollection<Purchase> Purchases { get; set; }
+        public ICollection<PersonImage> PersonImages { get; set; }
 
         public Person(string name, string document, string phone)
         {
             Validation(name, document, phone);
+            Purchases = new List<Purchase>();
+            PersonImages = new List<PersonImage>();
         }
 
         public Person(int id, string name, string document, string phone)
@@ -20,6 +23,8 @@ namespace ComprasSolution.Domain.Entities
 
             Id = id;
             Validation(name, document, phone);
+            Purchases = new List<Purchase>();
+            PersonImages = new List<PersonImage>();
         }
 
         private void Validation(string name, string document, string phone)

@@ -1,9 +1,11 @@
 ﻿using ComprasSolution.Application.DTOs;
 using ComprasSolution.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComprasSolution.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase

@@ -24,7 +24,7 @@ namespace ComprasSolution.Infra.Data.Mappings
                     .HasColumnName("datacompra");
 
             builder.HasOne(x => x.Person)
-                    .WithMany(x => x.Purcheses);
+                    .WithMany(x => x.Purchases);
 
             builder.HasOne(x => x.Product)
                     .WithMany(x => x.Purcheses);

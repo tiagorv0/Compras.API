@@ -1,0 +1,26 @@
+﻿using ComprasSolution.Domain.Integrations;
+
+namespace ComprasSolution.Infra.Data.Integrations
+{
+    public class SavePersonImage : ISavePersonImage
+    {
+        private readonly string _filePath;
+        public SavePersonImage()
+        {
+            _filePath = "img\\personimg";
+        }
+        public string Save(string imageBase64)
+        {
+            var fileExt = imageBase64.Substring(imageBase64.IndexOf('/') + 1, imageBase64.IndexOf(';') - imageBase64.IndexOf('/') - 1);
+            var base64Code = imageBase64.Substring(imageBase64.IndexOf(',') + 1);
+            var img = Convert.FromBase64String(base64Code);
+            var fileName = Guid.NewGuid().ToString() + "." + fileExt;
+            using (var imageFile = new FileStream(_filePath + "/" + fileName, FileMode.Create))
+            {
+                imageFile.Write(img, 0, img.Length);
+                imageFile.Flush();
+            }
+            return _filePath + "/" + fileName;
+        }
+    }
+}

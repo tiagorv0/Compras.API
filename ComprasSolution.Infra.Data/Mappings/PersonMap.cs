@@ -23,10 +23,13 @@ namespace ComprasSolution.Infra.Data.Mappings
             builder.Property(p => p.Phone)
                    .HasColumnName("celular");
 
-            builder.HasMany(p => p.Purcheses)
+            builder.HasMany(p => p.Purchases)
                    .WithOne(p => p.Person)
                    .HasForeignKey(p => p.PersonId);
 
+            builder.HasMany(x => x.PersonImages)
+                    .WithOne(x => x.Person)
+                    .HasForeignKey(x => x.PersonId);
         }
     }
 }

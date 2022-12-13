@@ -19,7 +19,8 @@ namespace ComprasSolution.Infra.Data.Repositories
 
         public override async Task<Purchase> GetByIdAsync(int id)
         {
-            return await _dbSet
+            return await _context
+                    .Purchases
                     .Include(x => x.Product)
                     .Include(x => x.Person)
                     .FirstOrDefaultAsync(x => x.Id == id);
@@ -37,7 +38,7 @@ namespace ComprasSolution.Infra.Data.Repositories
 
         private async Task<ICollection<Purchase>> GetIncludedListAsync(Expression<Func<Purchase, bool>> filter = null)
         {
-            var query = _dbSet.AsQueryable();
+            var query = _context.Purchases.AsQueryable();
 
             if (filter is not null) query = query.Where(filter);
 

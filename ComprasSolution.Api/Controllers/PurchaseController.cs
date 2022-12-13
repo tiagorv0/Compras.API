@@ -2,10 +2,12 @@
 using ComprasSolution.Application.Services;
 using ComprasSolution.Application.Services.Interfaces;
 using ComprasSolution.Domain.Validations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComprasSolution.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PurchaseController : ControllerBase

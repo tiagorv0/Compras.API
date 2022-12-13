@@ -1,9 +1,12 @@
 ﻿using ComprasSolution.Application.DTOs;
 using ComprasSolution.Application.Services.Interfaces;
+using ComprasSolution.Domain.FiltersDb;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComprasSolution.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PersonController : ControllerBase
@@ -59,6 +62,16 @@ namespace ComprasSolution.Api.Controllers
         public async Task<IActionResult> UpdateAsync([FromBody] PersonDTO personDTO)
         {
             var result = await _personService.UpdateAsync(personDTO);
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPageAsync([FromQuery] PersonFilterDb personFilterDb)
+        {
+            var result = await _personService.GetPagedAsync(personFilterDb);
             if (result.IsSuccess)
                 return Ok(result);
 

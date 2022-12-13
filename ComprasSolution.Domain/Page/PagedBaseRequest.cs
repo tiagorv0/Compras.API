@@ -1,6 +1,6 @@
 ﻿namespace ComprasSolution.Infra.Data.Repositories
 {
-    public class PagedBaseRequest
+    public abstract class PagedBaseRequest
     {
         public int Page { get; set; }
         public int PageSize { get; set; }

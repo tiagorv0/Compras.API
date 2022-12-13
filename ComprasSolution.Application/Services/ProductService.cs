@@ -37,7 +37,6 @@ namespace ComprasSolution.Application.Services
 
             var product = _mapper.Map<Product>(productDTO);
             var result = await _productRepository.CreateAsync(product);
-            await _unitOfWork.CommitAsync();
             return ResultService.Ok<ProductDTO>(_mapper.Map<ProductDTO>(result));
         }
 
@@ -48,7 +47,6 @@ namespace ComprasSolution.Application.Services
                 return ResultService.Fail("Produto não encontrado");
 
             await _productRepository.DeleteAsync(product);
-            await _unitOfWork.CommitAsync();
             return ResultService.Ok($"Produto do {id} foi deletado com sucesso");
         }
 
@@ -82,7 +80,6 @@ namespace ComprasSolution.Application.Services
 
             var result = _mapper.Map<ProductDTO, Product>(productDTO, product);
             await _productRepository.UpdateAsync(result);
-            await _unitOfWork.CommitAsync();
 
             return ResultService.Ok<ProductDTO>(_mapper.Map<ProductDTO>(result));
         }
